@@ -28,7 +28,26 @@ if 'api_response' not in st.session_state:
     st.session_state.api_response = None
 
 # Display the calculator screen
-st.text_input("Calculator Display", value=st.session_state.display, key="display_field", disabled=True)
+# st.text_input("Calculator Display", value=st.session_state.display, key="display_field", disabled=True)
+# Option 1a: Simple text display
+# st.text(f"Display: {st.session_state.display}")
+# Option 1b: Styled display using markdown
+# st.markdown(f"### Calculator Display: `{st.session_state.display}`")
+
+# Option 1c: More calculator-like display with custom styling
+st.markdown(f"""
+<div style="
+    border: 2px solid #ccc; 
+    padding: 10px; 
+    background-color: #f0f0f0; 
+    text-align: right; 
+    font-family: monospace; 
+    font-size: 24px;
+    margin-bottom: 20px;
+">
+{st.session_state.display}
+</div>
+""", unsafe_allow_html=True)
 
 # Function to handle number button clicks
 def number_click(number):
@@ -119,13 +138,16 @@ with col4:
     st.button("C", on_click=clear_calculator, use_container_width=True)
 
 # Row 4 of the calculator (0, ., =)
+# Create a new set of columns where one spans the width of col3+col4
+col1, col2, wide_col = st.columns([1, 1, 2])
 with col1:
     st.button("0", on_click=number_click, args=(0,), use_container_width=True)
 with col2:
     st.button(".", on_click=lambda: setattr(st.session_state, 'display',
               st.session_state.display + '.' if '.' not in st.session_state.display else st.session_state.display),
               use_container_width=True)
-with col3, col4:
+with wide_col:
+# with col3, col4:
     # Span the "=" button across two columns
     st.button("=", on_click=calculate_result, use_container_width=True)
 
