@@ -49,16 +49,27 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+
 # Function to handle number button clicks
 def number_click(number):
     if st.session_state.expecting_second_number:
+        # Starting to enter the second number for an operation
         st.session_state.display = str(number)
         st.session_state.expecting_second_number = False
     elif st.session_state.display == '0':
+        # Replace the initial '0'
         st.session_state.display = str(number)
+    elif st.session_state.result is not None and not st.session_state.expecting_second_number:
+        # If we have a result and we're not expecting a second number,
+        # this means we want to start a new calculation
+        st.session_state.display = str(number)
+        st.session_state.result = None  # Clear the result
+        st.session_state.first_number = None  # Clear previous calculation state
+        st.session_state.operation = None
     else:
+        # Normal case: append the number to existing display
         st.session_state.display += str(number)
-
+        
 # Function to handle operation button clicks
 def operation_click(op):
     st.session_state.first_number = float(st.session_state.display)
